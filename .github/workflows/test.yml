@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
 
 jobs:
   a_test_job:
@@ -22,3 +25,7 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
+      - name: last commit message
+        env:
+          LAST_MESSAGE: ${{ toJson(github.event.commits[0].message) }}
+        run: echo "$LAST_MESSAGE"
