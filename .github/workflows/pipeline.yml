@@ -43,7 +43,7 @@ jobs:
           fetch-depth: '0'
       - name: github context
         env:
-          COMMIT: ${{ github.event.commits.*.message[0] }}
+          COMMIT: ${{ toJson(github.event.commits.*.message[0]) }}
         run: echo "$GITHUB_CONTEXT"
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.64.0
