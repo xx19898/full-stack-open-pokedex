@@ -30,10 +30,10 @@ jobs:
           start: npm run start-prod
           wait-on: http://localhost:5000
       - name: Deploy to render
-        if: github.event_name == 'push' && !contains(github.event.commits.*.message[0],'#skip')
+        if: github.event_name == 'push' && !contains(github.event.commits[0].message,'#skip')
         run: curl -v https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
   tag_release:
-    if: github.event_name == 'push' && !contains(github.event.commits.*.message[0],'#skip')
+    if: github.event_name == 'push' && !contains(github.event.commits[0].message,'#skip')
     runs-on: ubuntu-20.04
     needs: [lint_build_test_deploy]
     steps:
@@ -41,10 +41,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: '0'
-      - name: github context
-        env:
-          COMMIT: ${{ toJson(github.event.commits.*.message[0]) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.64.0
         env:
