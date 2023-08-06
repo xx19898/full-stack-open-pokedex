@@ -33,13 +33,14 @@ jobs:
         if: github.event_name == 'push' && !contains(github.event.commits[0].message,'#skip')
         run: curl -v https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
       - name: Inform of failure
-        if: failure()
+        if: failure() && github.event_name == 'push'
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: error
           details: New commit broke the build ${{ github.event.head_commit.url }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Inform of success
+        if: github.event_name == 'push'
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
